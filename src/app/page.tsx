@@ -1,69 +1,158 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ProductCard } from "@/components/product-card";
+import { getFeaturedProducts, listCategories, listProducts } from "@/lib/queries";
+
+export const dynamic = "force-dynamic";
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  Laptops: "/products/probook-16.jpg",
+  Smartphones: "/products/nova-x-pro.jpg",
+  Audio: "/products/sonicwave-studio.jpg",
+  Wearables: "/products/chrono-fit.jpg",
+  Tablets: "/products/slate-pro-12.jpg",
+  Cameras: "/products/optica-z6.jpg",
+  Gaming: "/products/vertex-console-x.jpg",
+  Accessories: "/products/lumen-keyboard.jpg",
+  "Smart Home": "/products/homehub-voice.jpg",
+};
 
 export default function Home() {
+  const featured = getFeaturedProducts(8);
+  const categories = listCategories();
+  const deals = listProducts({ sort: "price-asc" })
+    .filter((product) => product.compareAtPrice)
+    .slice(0, 4);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div>
+      <section className="relative overflow-hidden bg-slate-900 text-white">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
+          <div>
+            <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+              New season · up to 20% off
+            </span>
+            <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Electronics that keep up with you.
+            </h1>
+            <p className="mt-5 max-w-xl text-lg text-slate-300">
+              Laptops, phones, audio, cameras and gaming gear — hand-picked,
+              genuinely stocked, and shipped free on orders over $500.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/products"
+                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200"
+              >
+                Shop all products
+              </Link>
+              <Link
+                href="/products?category=Laptops"
+                className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Browse laptops
+              </Link>
+            </div>
+          </div>
+          <div className="relative aspect-4/3 overflow-hidden rounded-3xl border border-white/10">
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src="/products/nitro-blade-gaming.jpg"
+              alt="Gaming laptop"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <section className="border-b border-slate-200 bg-slate-50">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+          {[
+            ["Free shipping", "On every order over $500"],
+            ["2-year warranty", "On all new devices"],
+            ["30-day returns", "No-questions-asked"],
+            ["Genuine stock", "Authorised retailer"],
+          ].map(([title, copy]) => (
+            <div key={title}>
+              <p className="text-sm font-semibold text-slate-900">{title}</p>
+              <p className="text-sm text-slate-600">{copy}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+        <h2 className="text-2xl font-bold tracking-tight">Shop by category</h2>
+        <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+          {categories.map(({ category, count }) => (
+            <Link
+              key={category}
+              href={`/products?category=${encodeURIComponent(category)}`}
+              className="group relative aspect-4/3 overflow-hidden rounded-2xl border border-slate-200"
+            >
+              <Image
+                src={CATEGORY_IMAGES[category] ?? "/products/desk-bundle.jpg"}
+                alt={category}
+                fill
+                sizes="(max-width: 768px) 50vw, 20vw"
+                className="object-cover transition duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-slate-900/80 to-slate-900/10" />
+              <div className="absolute bottom-3 left-3 text-white">
+                <p className="font-semibold">{category}</p>
+                <p className="text-xs text-slate-200">{count} products</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
+        <div className="flex items-end justify-between">
+          <h2 className="text-2xl font-bold tracking-tight">Featured this week</h2>
+          <Link
+            href="/products"
+            className="text-sm font-semibold text-slate-600 hover:text-slate-900"
+          >
+            View all →
+          </Link>
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {featured.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {deals.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+          <div className="rounded-3xl bg-slate-900 px-6 py-10 text-white sm:px-10">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Under-$300 deals
+                </h2>
+                <p className="mt-1 text-slate-300">
+                  Accessories and audio gear currently discounted.
+                </p>
+              </div>
+              <Link
+                href="/products?sort=price-asc"
+                className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900"
+              >
+                See all deals
+              </Link>
+            </div>
+            <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {deals.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
